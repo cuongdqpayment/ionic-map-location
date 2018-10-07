@@ -1,12 +1,32 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Map</ion-title>
-  </ion-navbar>
+    <ion-toolbar color="primary" *ngIf="isShowSearch">
+        <ion-searchbar #searchBar (input)="searchSelect($event)" (keyup.enter)="searchEnter()" ></ion-searchbar>
+    </ion-toolbar>
+    <ion-toolbar color="primary" *ngIf="isShowRoute">
+        <ion-searchbar #searchOrigin (input)="searchSelectOrigin($event)" (keyup.enter)="searchEnterOrigin()" ></ion-searchbar>
+        <ion-searchbar #searchDestination (input)="searchSelectDestination($event)" (keyup.enter)="searchEnterDestination()" ></ion-searchbar>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-fab left bottom>
+    <button ion-fab color="primary">
+      <ion-icon name="arrow-dropright"></ion-icon>
+    </button>
+    <ion-fab-list side="right">
+      <button large color="primary" ion-fab (click)="showSearchbar()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+      <button large color="primary" ion-fab (click)="showRoutebar()">
+          <ion-icon name="git-compare"></ion-icon>
+        </button>
+      <button color="primary" ion-fab (click)="getLocation()">
+        <ion-icon name="locate"></ion-icon>
+      </button>
+      <button color="primary" ion-fab (click)="resetMap()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
   <div #map id="map"></div>
 </ion-content>
