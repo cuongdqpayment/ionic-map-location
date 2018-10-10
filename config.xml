@@ -90,5 +90,6 @@
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="Cần biết vị trí của bạn để định vị bản đồ chính xác!" />
     </plugin>
     <engine name="android" spec="7.0.0" />
+    <plugin name="cordova-plugin-advanced-http" spec="^2.0.1" />
     <engine name="ios" spec="~4.5.5" />
 </widget>

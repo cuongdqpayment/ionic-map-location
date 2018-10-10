@@ -1,26 +1,59 @@
 <ion-header>
     <ion-toolbar color="primary" *ngIf="isShowSearch">
-        <ion-searchbar #searchBar (input)="searchSelect($event)" (keyup.enter)="searchEnter()" ></ion-searchbar>
+        <ion-item class="inputItem">
+            <button ion-button clear color="dark" type="button" item-left (click)="showCenterMode(1)"> 
+              <ion-icon name="pin"></ion-icon>
+            </button>	
+            <ion-input   type="text" placeholder="Tìm theo địa chỉ" [(ngModel)]=searchString (keyup.enter)="searchEnter()"></ion-input>
+              <ion-icon name="globe"> </ion-icon>
+          </ion-item>
+        <!-- <ion-searchbar #searchBar (input)="searchSelect($event)" (keyup.enter)="searchEnter()" ></ion-searchbar> -->
     </ion-toolbar>
     <ion-toolbar color="primary" *ngIf="isShowRoute">
-        <ion-searchbar #searchOrigin (input)="searchSelectOrigin($event)" (keyup.enter)="searchEnterOrigin()" ></ion-searchbar>
-        <ion-searchbar #searchDestination (input)="searchSelectDestination($event)" (keyup.enter)="searchEnterDestination()" ></ion-searchbar>
+         <ion-item class="inputItem">
+            <ion-label>
+              <ion-icon name="pin" ></ion-icon>
+            </ion-label>		
+            <ion-input   type="text" placeholder="Địa chỉ điểm đầu" [(ngModel)]=searchOrigin (keyup.enter)="searchEnterOrigin()">
+            </ion-input>
+            <button ion-button clear color="dark" type="button" item-right (click)="showCenterMode(3)"> 
+                <ion-icon name="globe"> </ion-icon>
+            </button>
+          </ion-item>
+         <ion-item class="inputItem">
+            <ion-label>
+              <ion-icon name="arrow-round-forward" ></ion-icon>
+            </ion-label>		
+            <ion-input   type="text" placeholder="Địa chỉ điểm đến" [(ngModel)]=searchDestination (keyup.enter)="searchEnterDestination()">
+            </ion-input>
+            <button ion-button clear color="dark" type="button" item-right (click)="showCenterMode(2)"> 
+                <ion-icon name="globe"> </ion-icon>
+            </button>
+          </ion-item>   
+        <!-- <ion-searchbar #searchOrigin (input)="searchSelectOrigin($event)" (keyup.enter)="searchEnterOrigin()" ></ion-searchbar>
+        <ion-searchbar #searchDestination (input)="searchSelectDestination($event)" (keyup.enter)="searchEnterDestination()" ></ion-searchbar> -->
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-fab left bottom>
-    <button ion-fab color="primary">
-      <ion-icon name="arrow-dropright"></ion-icon>
+  <div #map id="map"></div>
+  <!--cac object sau se hien thi len truoc-->
+  <!--nut trung tam de lua chon vi tri-->
+  <ion-icon name="pin" class="icon-red" *ngIf="isShowFooter"></ion-icon>
+  
+  <!--chum nut dieu khien phia trai ben duoi-->
+  <ion-fab right bottom auto-close-on-click-outside>
+    <button ion-fab mini color="primary">
+      <ion-icon name="arrow-dropleft"></ion-icon>
     </button>
-    <ion-fab-list side="right">
+    <ion-fab-list side="left">
       <button large color="primary" ion-fab (click)="showSearchbar()">
         <ion-icon name="search"></ion-icon>
       </button>
       <button large color="primary" ion-fab (click)="showRoutebar()">
           <ion-icon name="git-compare"></ion-icon>
         </button>
-      <button color="primary" ion-fab (click)="getLocation()">
+      <button color="primary" ion-fab (click)="showCurrentLocation()">
         <ion-icon name="locate"></ion-icon>
       </button>
       <button color="primary" ion-fab (click)="resetMap()">
@@ -28,5 +61,23 @@
       </button>
     </ion-fab-list>
   </ion-fab>
-  <div #map id="map"></div>
 </ion-content>
+
+<ion-footer>
+    <ion-toolbar color="primary" *ngIf="isShowFooter">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-list>
+              <ion-item>
+                <strong>Lat,lon:</strong>{{locfound.lat}},{{locfound.lon}}
+              </ion-item>
+              <ion-item>
+                <strong>Addess:</strong>{{locfound.address}}
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+</ion-footer>

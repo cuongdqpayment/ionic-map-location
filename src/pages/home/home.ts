@@ -21,7 +21,7 @@ let curCircleIcon;
 })
 export class HomePage {
   @ViewChild('map') mapElement: ElementRef;
-  @ViewChild('searchBar') searchBar: Searchbar;
+  //@ViewChild('searchBar') searchBar: Searchbar;
 
   map: any;
   locTracking: Subscription;
@@ -31,12 +31,31 @@ export class HomePage {
   isMapOk: boolean = false;
   isLocOK: boolean = false;
   isShowSearch: boolean = false;
+  isShowRoute: boolean = false;
+  isShowFooter: boolean = false;
+
   searchString: string = '';
   countTimer: number = 0;
-  isShowRoute: boolean = false;
-  searchOrigin:string='';
-  searchDestination:string='';
+  searchOrigin: string = '';
+  searchDestination: string = '';
 
+  locfound = {
+    lat: 16,
+    lon: 108,
+    address: "da nang viet nam"
+  };
+
+  originLocation = {
+    lat: 16,
+    lon: 108,
+    address: "da nang viet nam"
+  };
+
+  destinationLocation = {
+    lat: 16,
+    lon: 108,
+    address: "da nang viet nam"
+  };
 
   constructor(public navCtrl: NavController,
     public loadingCtrl: LoadingController,
@@ -51,7 +70,7 @@ export class HomePage {
     this.timer.fRun = () => {
       this.runTimer();
     };
-    this.timer.startTimer();
+    //this.timer.startTimer();
 
     //kiem tra dich vu chay khong
     /* this.apiService.getWeatherApi(1905468)
@@ -100,7 +119,6 @@ export class HomePage {
 
     //lay vi tri hien tai cua nguoi dung
 
-
     // this.nav.setRoot(HomePage);
     this.loadMap();
     //reset cac bien khac
@@ -113,7 +131,7 @@ export class HomePage {
     });
     loading.present();
 
-    latLng = new google.maps.LatLng(16.0584808, 108.2069579);
+    latLng = new google.maps.LatLng(16.05, 108.2);
 
     let myStyles = [{
       featureType: "poi",
@@ -142,6 +160,7 @@ export class HomePage {
       } */
     };
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
     infoWindow = new google.maps.InfoWindow({ map: this.map, content: "..." });
 
     /* let mIcon = new google.maps.MarkerImage(
@@ -185,9 +204,16 @@ export class HomePage {
     this.isMapOk = true;
 
     //lay vi tri tracking
-    this.getLocation();
+    this.showCurrentLocation();
 
     loading.dismiss();
+  }
+
+
+
+  showCurrentLocation() {
+    this.getLocation();
+    this.map.setCenter(latLng);
   }
 
   //lấy vị trí hiện tại và theo dõi vị trí nếu có thay đổi
@@ -296,17 +322,18 @@ export class HomePage {
 
     //dua trung tam ban do ve vi tri tracking
     latLng = new google.maps.LatLng(this.loc.lat, this.loc.lon);
-    this.map.setCenter(latLng);
+    //dua ban do ve vi tri trung tam
+    //this.map.setCenter(latLng);
   }
 
   //mo cua so tim kiem
   showSearchbar() {
     this.isShowSearch = !this.isShowSearch;
-    if (this.isShowSearch) this.isShowRoute=false 
+    if (this.isShowSearch) this.isShowRoute = false
   }
 
-  //thao tac tim kiem
-  searchSelect(val) {this.searchString = val.target.value;}
+  // //thao tac tim kiem
+  // searchSelect(val) {this.searchString = val.target.value;}
 
   searchEnter() {
     //lay chuoi searchString alert ra
@@ -316,12 +343,17 @@ export class HomePage {
     //thuc hien tim kiem 
     this.apiService.getlatlngFromAddress(this.searchString)
       .then(apiJson => {
+        this.locfound.lat = apiJson.results[0].geometry.location.lat
+        this.locfound.lon = apiJson.results[0].geometry.location.lng
+        this.locfound.address = apiJson.results[0].formatted_address
+
         //console.log(JSON.stringify(apiJson))
-        this.toastCtrl.create({
+        /* this.toastCtrl.create({
           message: "Toa do tim thay la: " + apiJson,
           duration: 5000,
           position: 'middle'
-        }).present();
+        }).present(); */
+
       }
       )
       .catch(err => {
@@ -333,7 +365,7 @@ export class HomePage {
         }).present();
       })
 
-    this.searchBar.clearInput(null);
+    //this.searchBar.clearInput(null);
     this.searchString = '';
     //thuc hien tim kiem 
 
@@ -345,53 +377,87 @@ export class HomePage {
   //tim kiem route
   showRoutebar() {
     this.isShowRoute = !this.isShowRoute;
-    if (this.isShowRoute) this.isShowSearch=false 
+    if (this.isShowRoute) this.isShowSearch = false
   }
 
-  searchSelectOrigin(val) {this.searchOrigin = val.target.value;}
-  searchSelectDestination(val) {this.searchDestination = val.target.value;}
+  // searchSelectOrigin(val) {this.searchOrigin = val.target.value;}
+  // searchSelectDestination(val) {this.searchDestination = val.target.value;}
+
+  showCenterMode(f: number) {
+    //them su kien keo tha ban do de lay dia chi trung tam ban do
+    if (this.isMapOk)
+      google.maps.event.addListener(this.map, 'dragend', () => this.mapDragend());
+
+    //sau khi chon xong khong xuat hien nua thi xoa cai su kien nay de nhe ung dung
+
+    //hien thi icon center cho phep nguoi dung di chuyen ban do
+    //de lay ra toa do va dia chi cua toa do do
+    this.isShowFooter = true;
+    //
+  }
 
   searchEnterOrigin() {
-    if (this.searchOrigin!=''&&this.searchDestination!=''){
-      this.searchRoute(this.searchOrigin,this.searchDestination);
+    if (this.searchOrigin != '' && this.searchDestination != '') {
+      this.searchRoute(this.searchOrigin, this.searchDestination);
     }
   }
 
   searchEnterDestination() {
-    if (this.searchOrigin!=''&&this.searchDestination!=''){
-      this.searchRoute(this.searchOrigin,this.searchDestination);
+    if (this.searchOrigin != '' && this.searchDestination != '') {
+      this.searchRoute(this.searchOrigin, this.searchDestination);
     }
   }
 
 
-  searchRoute(origin: string, destination: string)  {
-    this.apiService.getRouteApi(origin, destination)
+  searchRoute(origin: string, destination: string) {
+    this.apiService.getRouteApiNative(origin, destination)
       .then(points => {
         console.log(points)
         this.toastCtrl.create({
-          message: "Duong di tim thay la: " + JSON.stringify(points),
+          message: "api route data: " + JSON.stringify(points),
           duration: 10000,
           position: 'middle'
         }).present();
 
         //reset thong tin tim kiem lai vi tim thay ket qua
         this.searchOrigin = '';
-        this.searchDestination='';
-        this.isShowRoute=false;
+        this.searchDestination = '';
+        this.isShowRoute = false;
         //
       }
       )
       //err= {"_body":{"isTrusted":true},"status":0,"ok":false,"statusText":"","headers":{},"type":3,"url":null}
-      .catch(err => 
-        {
-          console.log("Loi request route: ok=" + err.ok + ", isTrusted=" + err._body.isTrusted)
-          //console.log(JSON.stringify(err))
+      .catch(err => {
+        console.log("Loi request route: " + JSON.stringify(err))
+        //console.log(JSON.stringify(err))
+        this.toastCtrl.create({
+          message: "Err API route: " + JSON.stringify(err),
+          duration: 5000,
+          position: 'bottom'
+        }).present();
+      }
+      )
+  }
+
+
+
+  mapDragend() {
+    if (this.map.getCenter()) {
+      console.log(this.map.getCenter());
+      this.originLocation.lat = this.map.getCenter().lat();
+      this.originLocation.lon = this.map.getCenter().lng()
+      //thuc hien goi ham lay dia chi 
+      this.apiService.getAddressFromlatlng(this.originLocation.lat + "," + this.originLocation.lon)
+        .then(address => this.searchString = address)
+        .catch(err => {
           this.toastCtrl.create({
-            message: "Err: " + JSON.stringify(err),
+            message: "Err API route: " + JSON.stringify(err),
             duration: 5000,
             position: 'bottom'
           }).present();
-        }
-        )
+        })
+        ;
+    }
+
   }
 }

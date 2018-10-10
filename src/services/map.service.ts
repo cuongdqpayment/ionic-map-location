@@ -1,4 +1,7 @@
-import { Http/* , Headers, RequestOptions  */} from '@angular/http';
+import { Http } from '@angular/http';
+import { HTTP } from '@ionic-native/http';
+import { Platform } from 'ionic-angular';
+
 import { Injectable } from "@angular/core";
 import 'rxjs/add/operator/toPromise';
 
@@ -12,7 +15,9 @@ export class ApiService {
     urlRoute='https://maps.googleapis.com/maps/api/directions/json?origin=30%20Be%20van%20dan,%20da%20nang,%20viet%20nam&destination=263%20nguyen%20van%20linh,%20da%20nang&key=AIzaSyDBxMizhomgbDZ9ljbf9-mY_Omuo0heCig';
     urlWeather='https://api.openweathermap.org/data/2.5/weather?id=1905468&APPID=22bc862e9465e98d1c74b7351cab36ef&units=metric';
     */
-    constructor(private http: Http) { }
+    constructor(private http: Http,
+        private http_native: HTTP,
+        private platform: Platform) { }
 
     getAddressFromlatlng(latlng: string) {
         return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='
@@ -31,9 +36,9 @@ export class ApiService {
             .toPromise()
             .then(res => res.json())
             //.then(apiJson=>console.log(JSON.stringify(apiJson)))
-            .then(apiJson => apiJson.results[0].geometry.location.lat
+            /* .then(apiJson => apiJson.results[0].geometry.location.lat
                 + ','
-                + apiJson.results[0].geometry.location.lng)
+                + apiJson.results[0].geometry.location.lng) */
     }
 
     getWeatherApi(cityId: number) {
@@ -50,13 +55,13 @@ export class ApiService {
     getRouteApi(startPoint: string, endPoint: string) {
         //them header option de sua loi CORS
         //
-   /*      let headers = new Headers();
-        headers.append('Access-Control-Allow-Origin', '*');
-        headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT');
-        headers.append('Accept', 'application/json');
-        headers.append('content-type', 'application/json');
-        let options = new RequestOptions({ headers: headers, withCredentials: true });
- */
+        /*      let headers = new Headers();
+             headers.append('Access-Control-Allow-Origin', '*');
+             headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT');
+             headers.append('Accept', 'application/json');
+             headers.append('content-type', 'application/json');
+             let options = new RequestOptions({ headers: headers, withCredentials: true });
+      */
         return this.http.get(
             //'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyDBxMizhomgbDZ9ljbf9-mY_Omuo0heCig'
             'https://maps.googleapis.com/maps/api/directions/json?origin=' + startPoint
@@ -66,8 +71,36 @@ export class ApiService {
         )
             .toPromise()
             .then(res => res.json())
-            .then(apiJson=>this.decodePolyline(apiJson.routes[0].overview_polyline.points))
+            .then(apiJson => this.decodePolyline(apiJson.routes[0].overview_polyline.points))
 
+    }
+
+    getRouteApiNative(startPoint: string, endPoint: string) {
+        if (this.platform.is('ios') || this.platform.is('android')) {
+
+            return this.http_native.get(
+                'https://maps.googleapis.com/maps/api/directions/json?origin=' + startPoint
+                + '&destination=' + endPoint
+                + '&key=' + this.GOOGLE_API_KEY
+                , {}, {'Content-Type': 'application/json'}
+            )
+                .then(res => res.data)
+            /* console.log(res.status);
+            console.log(res.data); // data received by server
+            console.log(res.headers); */
+            //.then(apiJson=>this.decodePolyline(apiJson.routes[0].overview_polyline.points))
+        }
+        else {
+            return this.http.get(
+                'https://maps.googleapis.com/maps/api/directions/json?origin=' + startPoint
+                + '&destination=' + endPoint
+                + '&key=' + this.GOOGLE_API_KEY
+            )
+                .toPromise()
+                .then(res => res.json())
+                .then(apiJson => this.decodePolyline(apiJson.routes[0].overview_polyline.points))
+
+        }
     }
 
     //chuyen doi chuoi polyline thanh cac toa do diem
