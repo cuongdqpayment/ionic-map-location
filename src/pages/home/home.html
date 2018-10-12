@@ -6,7 +6,7 @@
         <ion-icon name="pin" class="icon-blue icon-size-small"></ion-icon>
       </button>
 
-      <ion-input type="text" placeholder="Tìm theo địa chỉ" [(ngModel)]=originLocation.address (keyup)="inputChange($event,1)" (keyup.enter)="searchEnter(1)"></ion-input>
+      <ion-input type="text" placeholder="Tìm theo địa chỉ" [(ngModel)]="originLocation.address" (keyup)="inputChange1($event)" (keyup.enter)="searchEnter(1)"></ion-input>
 
       <button ion-button clear color="dark" type="button" item-right (click)="showSearchMode(1)" *ngIf="isOriginOK">
         <ion-icon name="return-left" class="icon-blue icon-size-small"> </ion-icon>
@@ -18,7 +18,7 @@
         <ion-icon name="pin" class="icon-red icon-size-small"></ion-icon>
       </button>
 
-      <ion-input type="text" placeholder="Địa chỉ điểm đến" [(ngModel)]=destinationLocation.address (keyup)="inputChange($event,2)" (keyup.enter)="searchEnter(2)"></ion-input>
+      <ion-input type="text" placeholder="Địa chỉ điểm đến" [(ngModel)]="destinationLocation.address" (keyup)="inputChange2($event)" (keyup.enter)="searchEnter(2)"></ion-input>
 
       <button ion-button clear color="dark" type="button" item-right (click)="showSearchMode(2)" *ngIf="isDestinationOK">
         <ion-icon name="globe" class="icon-red icon-size-small"> </ion-icon>

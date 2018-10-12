@@ -15,6 +15,9 @@ export class ApiService {
     urlRoute='https://maps.googleapis.com/maps/api/directions/json?origin=30%20Be%20van%20dan,%20da%20nang,%20viet%20nam&destination=263%20nguyen%20van%20linh,%20da%20nang&key=AIzaSyDBxMizhomgbDZ9ljbf9-mY_Omuo0heCig';
     urlWeather='https://api.openweathermap.org/data/2.5/weather?id=1905468&APPID=22bc862e9465e98d1c74b7351cab36ef&units=metric';
     */
+
+    routeApi:any;
+
     constructor(private http: Http,
         private http_native: HTTP,
         private platform: Platform) { }
@@ -54,14 +57,7 @@ export class ApiService {
 
     getRouteApi(startPoint: string, endPoint: string) {
         //them header option de sua loi CORS
-        //
-        /*      let headers = new Headers();
-             headers.append('Access-Control-Allow-Origin', '*');
-             headers.append('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT');
-             headers.append('Accept', 'application/json');
-             headers.append('content-type', 'application/json');
-             let options = new RequestOptions({ headers: headers, withCredentials: true });
-      */
+        
         return this.http.get(
             //'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyDBxMizhomgbDZ9ljbf9-mY_Omuo0heCig'
             'https://maps.googleapis.com/maps/api/directions/json?origin=' + startPoint
@@ -71,7 +67,14 @@ export class ApiService {
         )
             .toPromise()
             .then(res => res.json())
-            .then(apiJson => this.decodePolyline(apiJson.routes[0].overview_polyline.points))
+            .then(apiJson => 
+             this.routeApi =   {
+                    route:apiJson.routes[0].overview_polyline.points,
+                    points:this.decodePolyline(apiJson.routes[0].overview_polyline.points),
+                    length:0,
+                    cost:0
+                }
+            )
 
     }
 
@@ -98,7 +101,33 @@ export class ApiService {
             )
                 .toPromise()
                 .then(res => res.json())
-                .then(apiJson => this.decodePolyline(apiJson.routes[0].overview_polyline.points))
+                .then(apiJson => this.routeApi =   {
+                                    route: apiJson.routes[0].overview_polyline.points,
+                                    points:this.decodePolyline(apiJson.routes[0].overview_polyline.points),
+                                    end_address: apiJson.routes[0].legs[0].end_address,
+                                    end_location: {
+                                                    lat : apiJson.routes[0].legs[0].end_location.lat,
+                                                    lng : apiJson.routes[0].legs[0].end_location.lng
+                                                    },
+                                    start_address: apiJson.routes[0].legs[0].start_address,
+                                    start_location: {
+                                                    lat : apiJson.routes[0].legs[0].start_location.lat,
+                                                    lng : apiJson.routes[0].legs[0].start_location.lng
+                                                    },
+                                    distance: {
+                                        text: apiJson.routes[0].legs[0].distance.text,
+                                        value: apiJson.routes[0].legs[0].distance.value
+                                        },
+                                    duration: {
+                                            text : apiJson.routes[0].legs[0].duration.text,
+                                            value : apiJson.routes[0].legs[0].duration.value,
+                                         },
+                                    cost: {
+                                        vnd: 18,
+                                        usd:0.1
+                                    }
+                                }
+                )
 
         }
     }
@@ -129,7 +158,7 @@ export class ApiService {
             } while (b >= 0x20);
             var dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
             lng += dlng;
-            points.push({ latitude: (lat / 1E5), longitude: (lng / 1E5) })
+            points.push({ lat: (lat / 1E5), lng: (lng / 1E5) })
         }
         return points
     }

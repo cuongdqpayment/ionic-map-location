@@ -17,3 +17,5 @@ export class TimerSchedule {
         clearInterval(this.runSchedule);
     }
 }
+
+

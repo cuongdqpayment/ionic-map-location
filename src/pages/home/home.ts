@@ -386,57 +386,11 @@ export class HomePage {
   }
 
 
-  //tim kiem route
+  //tim kiem route hien thi ca diem dau va diem cuoi
   showRoutebar() {
-    this.isShowRoute = !this.isShowRoute;
+    //this.isShowRoute = !this.isShowRoute;
   }
 
-  searchEnterOrigin() {
-    if (this.searchOrigin != '' && this.searchDestination != '') {
-      this.searchRoute(this.searchOrigin, this.searchDestination);
-    }
-  }
-
-  searchEnterDestination() {
-    if (this.searchOrigin != '' && this.searchDestination != '') {
-      this.searchRoute(this.searchOrigin, this.searchDestination);
-    }
-  }
-
-
-  searchRoute(origin: string, destination: string) {
-    //truong hop tim duong di khi co 2 diem duoc gan
-
-
-
-    this.apiService.getRouteApiNative(origin, destination)
-      .then(points => {
-        console.log(points)
-        this.toastCtrl.create({
-          message: "api route data: " + JSON.stringify(points),
-          duration: 10000,
-          position: 'middle'
-        }).present();
-
-        //reset thong tin tim kiem lai vi tim thay ket qua
-        this.searchOrigin = '';
-        this.searchDestination = '';
-        this.isShowRoute = false;
-        //
-      }
-      )
-      //err= {"_body":{"isTrusted":true},"status":0,"ok":false,"statusText":"","headers":{},"type":3,"url":null}
-      .catch(err => {
-        console.log("Loi request route: " + JSON.stringify(err))
-        //console.log(JSON.stringify(err))
-        this.toastCtrl.create({
-          message: "Err API route: " + JSON.stringify(err),
-          duration: 5000,
-          position: 'bottom'
-        }).present();
-      }
-      )
-  }
 
 
   showCenterMode(f: number) {
@@ -503,16 +457,18 @@ export class HomePage {
 
       this.apiService.getAddressFromlatlng(this.locfound.lat + "," + this.locfound.lon)
         .then(address => {
-          console.log("Funtion: " + f + ": " + address);
+          console.log("Funtion: " + f);
 
           this.locfound.address = address;
           if (f == 1) {
             this.originLocation.address = this.locfound.address;
             this.isOriginOK = true;
+            console.log("Origin: " + this.originLocation.address);
           }
           if (f == 2) {
             this.destinationLocation.address = this.locfound.address;
             this.isDestinationOK = true;
+            console.log("Destination: " + this.destinationLocation.address);
           }
 
         })
@@ -564,6 +520,7 @@ export class HomePage {
         duration: 1000,
         position: 'middle'
       }).present();
+
       this.isShowRoute = true;
 
     }
@@ -595,7 +552,9 @@ export class HomePage {
 
       //goi chuc nang tim duong di 
       //ket qua ve duong di cho no
-
+      this.searchRoute(
+        this.originLocation.lat+","+this.originLocation.lon
+        ,this.destinationLocation.lat+","+this.destinationLocation.lon);
 
     }
   }
@@ -690,6 +649,59 @@ export class HomePage {
           position: 'bottom'
         }).present();
       })
+  }
+
+
+  searchRoute(origin: string, destination: string) {
+    //truong hop tim duong di khi co 2 diem duoc gan
+
+    this.apiService.getRouteApiNative(origin, destination)
+      .then(routeApi => {
+        
+        console.log(routeApi);
+        //ve duong di tu diem dau den diem cuoi theo tung diem duoc tim thay
+        //tra ve: khoang cach, so tien uoc luong
+        //so luong diem duong di ...
+         /* var flightPlanCoordinates = [
+                                      {lat: 16.0656, lng: 108.2},
+                                      {lat: 16.06572, lng: 108.20156},
+                                      {lat: 16.0658, lng: 108.20293},
+                                      {lat: 16.06587, lng: 108.20362},
+                                      {lat: 16.06598, lng: 108.20506},
+                                      {lat: 16.06606, lng: 108.20571},
+                                      {lat: 16.06607, lng: 108.20601},
+                                      {lat: 16.06609, lng: 108.20638}
+                                                                    ];  */
+
+        var flightPath = new google.maps.Polyline({
+          path: routeApi.points,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(this.map);
+
+        this.toastCtrl.create({
+          message: "api route point: " + JSON.stringify(routeApi.points.length),
+          duration: 10000,
+          position: 'middle'
+        }).present();
+
+        
+      }
+      )
+       .catch(err => {
+        console.log("Loi request route: " + JSON.stringify(err))
+        //console.log(JSON.stringify(err))
+        this.toastCtrl.create({
+          message: "Err API route: " + JSON.stringify(err),
+          duration: 5000,
+          position: 'bottom'
+        }).present();
+      }
+      )
   }
 
 
