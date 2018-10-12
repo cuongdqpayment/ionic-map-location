@@ -28,16 +28,22 @@ export class HomePage {
   loc: Location = new Location();
   locOld: Location = new Location();
   timer: TimerSchedule = new TimerSchedule();
+  
   isMapOk: boolean = false;
   isLocOK: boolean = false;
+  isShowHeader: boolean = false;
   isShowSearch: boolean = false;
   isShowRoute: boolean = false;
-  isShowFooter: boolean = false;
+  isShowCenter: boolean = false;
+  isShowFooter: boolean = true;
 
+  searchOrigin: string = "";
+  searchDestination: string = "";
+
+  className: string = "icon-center icon-blue";
+  
   searchString: string = '';
   countTimer: number = 0;
-  searchOrigin: string = '';
-  searchDestination: string = '';
 
   locfound = {
     lat: 16,
@@ -328,72 +334,14 @@ export class HomePage {
 
   //mo cua so tim kiem
   showSearchbar() {
+    this.isShowHeader = !this.isShowHeader;
     this.isShowSearch = !this.isShowSearch;
-    if (this.isShowSearch) this.isShowRoute = false
   }
 
-  // //thao tac tim kiem
-  // searchSelect(val) {this.searchString = val.target.value;}
-
-  searchEnter() {
-    //lay chuoi searchString alert ra
-    //console.log(this.searchString);
-    //xoa value cua search dong cua so search lai
-    //ghi vao lich su tim kiem
-    //thuc hien tim kiem 
-    this.apiService.getlatlngFromAddress(this.searchString)
-      .then(apiJson => {
-        this.locfound.lat = apiJson.results[0].geometry.location.lat
-        this.locfound.lon = apiJson.results[0].geometry.location.lng
-        this.locfound.address = apiJson.results[0].formatted_address
-
-        //console.log(JSON.stringify(apiJson))
-        /* this.toastCtrl.create({
-          message: "Toa do tim thay la: " + apiJson,
-          duration: 5000,
-          position: 'middle'
-        }).present(); */
-
-      }
-      )
-      .catch(err => {
-        console.log(JSON.stringify(err))
-        this.toastCtrl.create({
-          message: "Err: " + JSON.stringify(err),
-          duration: 5000,
-          position: 'bottom'
-        }).present();
-      })
-
-    //this.searchBar.clearInput(null);
-    this.searchString = '';
-    //thuc hien tim kiem 
-
-    //dong cua so tim kiem lai
-    //this.showSearchbar();
-    this.isShowSearch = false;
-  }
-
+  
   //tim kiem route
   showRoutebar() {
     this.isShowRoute = !this.isShowRoute;
-    if (this.isShowRoute) this.isShowSearch = false
-  }
-
-  // searchSelectOrigin(val) {this.searchOrigin = val.target.value;}
-  // searchSelectDestination(val) {this.searchDestination = val.target.value;}
-
-  showCenterMode(f: number) {
-    //them su kien keo tha ban do de lay dia chi trung tam ban do
-    if (this.isMapOk)
-      google.maps.event.addListener(this.map, 'dragend', () => this.mapDragend());
-
-    //sau khi chon xong khong xuat hien nua thi xoa cai su kien nay de nhe ung dung
-
-    //hien thi icon center cho phep nguoi dung di chuyen ban do
-    //de lay ra toa do va dia chi cua toa do do
-    this.isShowFooter = true;
-    //
   }
 
   searchEnterOrigin() {
@@ -440,15 +388,31 @@ export class HomePage {
   }
 
 
+  mapDragend(f:number) {
+    if (this.map.getCenter()) { 
+      this.locfound.lat = this.map.getCenter().lat();
+      this.locfound.lon = this.map.getCenter().lng();
+      this.locfound.address = "searching...";
+      console.log("Center: "+ this.locfound.lat + "," + this.locfound.lon);
+      
 
-  mapDragend() {
-    if (this.map.getCenter()) {
-      console.log(this.map.getCenter());
       this.originLocation.lat = this.map.getCenter().lat();
       this.originLocation.lon = this.map.getCenter().lng()
       //thuc hien goi ham lay dia chi 
+
       this.apiService.getAddressFromlatlng(this.originLocation.lat + "," + this.originLocation.lon)
-        .then(address => this.searchString = address)
+        .then(address => {
+          console.log("Funtion: " + f);
+          
+          this.locfound.address = address;
+          if (f==1) {
+            this.searchOrigin = address;
+          }
+          if (f==2) {
+            this.searchDestination = address
+          }
+          
+        })
         .catch(err => {
           this.toastCtrl.create({
             message: "Err API route: " + JSON.stringify(err),
@@ -460,4 +424,104 @@ export class HomePage {
     }
 
   }
+
+  showCenterMode(f: number) {
+    //this.isShowFooter = true;
+     //them su kien keo tha ban do de lay dia chi trung tam ban do
+    if (this.isMapOk)
+     google.maps.event.addListener(this.map, 'dragend', () => this.mapDragend(f));
+
+    if (f == 1) {
+      //tim theo diem dau
+      this.toastCtrl.create({
+        message: "Di chuyển bản đồ tới vị trí điểm bắt đầu",
+        duration: 3000,
+        position: 'bottom'
+      }).present();
+      //class mau xanh
+      this.className = "icon-center icon-blue";
+      this.isShowCenter = true;
+
+    }
+    if (f == 2) {
+      //tim theo diem cuoi
+      
+      this.toastCtrl.create({
+        message: "Di chuyển bản đồ tới vị trí điểm đến",
+        duration: 3000,
+        position: 'bottom'
+      }).present();
+      //class mau do
+      this.className = "icon-center icon-red";
+      this.isShowCenter = true;
+    }
+  }
+
+  showSearchMode(f: number) {
+    if (f == 1) {
+      //hien thi o tim kiem diem den
+      //ghi nhan diem dau da tim thay
+      //gan marker cho diem dau va diem cuoi
+      //xoa listener de lan sau tim tiep
+      google.maps.event.clearListeners(this.map, 'dragend');
+
+      //
+      this.toastCtrl.create({
+        message: "Nhập địa chỉ điểm đến hoặc tìm trên bản đồ",
+        duration: 1000,
+        position: 'middle'
+      }).present();
+      this.isShowRoute = true;
+      this.isShowCenter = false;
+    }
+    if (f == 2) {
+      //tim kiem duong di 
+      //gan marker cho diem cuoi
+      //xoa listener de lan sau tim tiep
+      google.maps.event.clearListeners(this.map, 'dragend');
+      // truong hop khong su dung keo tha thi sao?
+
+      this.toastCtrl.create({
+        message: "Đang tìm kiếm đường đi",
+        duration: 1000,
+        position: 'middle'
+      }).present();
+      this.isShowCenter = false;
+    }
+  }
+
+
+  // tim kiem theo dia chi bang cach bam phim enter
+  searchEnter(f: number) {
+    
+    this.apiService.getlatlngFromAddress(f==1?this.searchOrigin:this.searchDestination)
+      .then(apiJson => {
+        this.locfound.lat = apiJson.results[0].geometry.location.lat
+        this.locfound.lon = apiJson.results[0].geometry.location.lng
+        this.locfound.address = apiJson.results[0].formatted_address
+
+        //console.log(JSON.stringify(apiJson))
+        /* this.toastCtrl.create({
+          message: "Toa do tim thay la: " + apiJson,
+          duration: 5000,
+          position: 'middle'
+        }).present(); */
+
+        //di chuyen ban do den vi tri tim thay
+        //gan ghim vi tri diem dau hoac diem cuoi vao do
+        
+      }
+      )
+      .catch(err => {
+        console.log(JSON.stringify(err))
+        this.toastCtrl.create({
+          message: "Err: " + JSON.stringify(err),
+          duration: 5000,
+          position: 'bottom'
+        }).present();
+      })
+
+  }
+
+
 }
