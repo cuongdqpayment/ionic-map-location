@@ -581,7 +581,11 @@ export class HomePage {
   inputChange2(ev){
     console.log("gia tri goc: " + this.destinationLocation.address);
     console.log("cua so: " + ev.target.value);
-}
+   }
+
+   closeFooter(){
+     this.isShowFooter=false;
+   }
 
   // tim kiem theo dia chi bang cach bam phim enter
   //ket qua lay toa do theo dia chi do
@@ -662,21 +666,11 @@ export class HomePage {
         //ve duong di tu diem dau den diem cuoi theo tung diem duoc tim thay
         //tra ve: khoang cach, so tien uoc luong
         //so luong diem duong di ...
-         /* var flightPlanCoordinates = [
-                                      {lat: 16.0656, lng: 108.2},
-                                      {lat: 16.06572, lng: 108.20156},
-                                      {lat: 16.0658, lng: 108.20293},
-                                      {lat: 16.06587, lng: 108.20362},
-                                      {lat: 16.06598, lng: 108.20506},
-                                      {lat: 16.06606, lng: 108.20571},
-                                      {lat: 16.06607, lng: 108.20601},
-                                      {lat: 16.06609, lng: 108.20638}
-                                                                    ];  */
-
+         
         var flightPath = new google.maps.Polyline({
           path: routeApi.points,
           geodesic: true,
-          strokeColor: '#FF0000',
+          strokeColor: '#00ff00',
           strokeOpacity: 1.0,
           strokeWeight: 2
         });
