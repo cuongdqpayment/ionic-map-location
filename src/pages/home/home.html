@@ -6,7 +6,8 @@
         <ion-icon name="pin" class="icon-blue icon-size-small"></ion-icon>
       </button>
 
-      <ion-input type="text" placeholder="Tìm theo địa chỉ" [(ngModel)]="originLocation.address" (keyup)="inputChange1($event)" (keyup.enter)="searchEnter(1)"></ion-input>
+      <ion-input type="text" placeholder="Tìm theo địa chỉ" [(ngModel)]="originLocation.address" (keyup)="inputChange1($event)"
+        (keyup.enter)="searchEnter(1)"></ion-input>
 
       <button ion-button clear color="dark" type="button" item-right (click)="showSearchMode(1)" *ngIf="isOriginOK">
         <ion-icon name="return-left" class="icon-blue icon-size-small"> </ion-icon>
@@ -18,7 +19,8 @@
         <ion-icon name="pin" class="icon-red icon-size-small"></ion-icon>
       </button>
 
-      <ion-input type="text" placeholder="Địa chỉ điểm đến" [(ngModel)]="destinationLocation.address" (keyup)="inputChange2($event)" (keyup.enter)="searchEnter(2)"></ion-input>
+      <ion-input type="text" placeholder="Địa chỉ điểm đến" [(ngModel)]="destinationLocation.address" (keyup)="inputChange2($event)"
+        (keyup.enter)="searchEnter(2)"></ion-input>
 
       <button ion-button clear color="dark" type="button" item-right (click)="showSearchMode(2)" *ngIf="isDestinationOK">
         <ion-icon name="globe" class="icon-red icon-size-small"> </ion-icon>
@@ -60,10 +62,7 @@
       <ion-col>
         <ion-list>
           <ion-item>
-             <strong>Lat,lon: </strong> {{locfound.lat}},{{locfound.lon}} 
-             
-             
-
+            <strong>Lat,lon: </strong> {{locfound.lat}},{{locfound.lon}}
           </ion-item>
           <ion-item>
             <strong>Addess: </strong> {{locfound.address}}
@@ -72,9 +71,9 @@
       </ion-col>
       <ion-col>
         <ion-item>
-            <button ion-button clear color="dark" type="button" item-left (click)="closeFooter()">
-                <ion-icon name="arrow-dropdown" class="icon-blue icon-size-big"></ion-icon>
-            </button>
+          <button ion-button clear color="dark" type="button" item-left (click)="closeFooter()">
+            <ion-icon name="arrow-dropdown" class="icon-blue icon-size-big"></ion-icon>
+          </button>
         </ion-item>
       </ion-col>
     </ion-row>

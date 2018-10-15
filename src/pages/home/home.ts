@@ -150,7 +150,7 @@ export class HomePage {
     this.isShowSearch = false;
     this.isShowRoute = false;
     this.isShowCenter = false;
-    this.isShowFooter = true;
+    this.isShowFooter = false;
 
     this.isOriginOK = false;
     this.isDestinationOK = false;
