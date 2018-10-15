@@ -688,7 +688,6 @@ export class HomePage {
       )
        .catch(err => {
         console.log("Loi request route: " + JSON.stringify(err))
-        //console.log(JSON.stringify(err))
         this.toastCtrl.create({
           message: "Err API route: " + JSON.stringify(err),
           duration: 5000,
