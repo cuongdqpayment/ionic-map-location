@@ -88,16 +88,6 @@ export class HomePage {
     };
     //this.timer.startTimer();
 
-    //kiem tra dich vu chay khong
-    /* this.apiService.getWeatherApi(1905468)
-    .then(apiJson=>console.log(JSON.stringify(apiJson)))
-    .catch(err=>console.log(JSON.stringify(err)))
-     */
-
-    /* this.apiService.getAddressFromlatlng('16.0651894,108.2009439')
-    .then(address=>console.log('Địa chỉ tìm thấy: '+address))
-    .catch(err=>console.log("Loi nay: "+JSON.stringify(err))) */
-
   }
 
   runTimer() {
@@ -298,7 +288,7 @@ export class HomePage {
       }
     }).catch((err) => {
       this.isLocOK = false;
-      console.log(err);
+      //console.log(err);
       const toast = this.toastCtrl.create({
         message: "Error code: " + err.code + " - " + err.message,
         duration: 5000,
@@ -338,7 +328,7 @@ export class HomePage {
       },
         err => {
           this.isLocOK = false;
-          console.log(err)
+          //console.log(err)
           //alert("Loi: " + err.code + " - " + err.message)
           const toast = this.toastCtrl.create({
             message: "Loi subsriber: " + err.code + " - " + err.message,
@@ -438,7 +428,7 @@ export class HomePage {
       this.locfound.lat = this.map.getCenter().lat();
       this.locfound.lon = this.map.getCenter().lng();
       this.locfound.address = "searching...";
-      console.log("Center: " + this.locfound.lat + "," + this.locfound.lon);
+      //console.log("Center: " + this.locfound.lat + "," + this.locfound.lon);
 
       if (f == 1) {
         this.originLocation.address = this.locfound.address;
@@ -457,18 +447,18 @@ export class HomePage {
 
       this.apiService.getAddressFromlatlng(this.locfound.lat + "," + this.locfound.lon)
         .then(address => {
-          console.log("Funtion: " + f);
+          //console.log("Funtion: " + f);
 
           this.locfound.address = address;
           if (f == 1) {
             this.originLocation.address = this.locfound.address;
             this.isOriginOK = true;
-            console.log("Origin: " + this.originLocation.address);
+            //console.log("Origin: " + this.originLocation.address);
           }
           if (f == 2) {
             this.destinationLocation.address = this.locfound.address;
             this.isDestinationOK = true;
-            console.log("Destination: " + this.destinationLocation.address);
+            //console.log("Destination: " + this.destinationLocation.address);
           }
 
         })
@@ -574,13 +564,13 @@ export class HomePage {
   }
 
   inputChange1(ev){
-      console.log("gia tri goc: " + this.originLocation.address);
-      console.log("cua so: " + ev.target.value);
+      //console.log("gia tri goc: " + this.originLocation.address);
+      //console.log("cua so: " + ev.target.value);
   }
 
   inputChange2(ev){
-    console.log("gia tri goc: " + this.destinationLocation.address);
-    console.log("cua so: " + ev.target.value);
+    //console.log("gia tri goc: " + this.destinationLocation.address);
+    //console.log("cua so: " + ev.target.value);
    }
 
    closeFooter(){
@@ -590,7 +580,7 @@ export class HomePage {
   // tim kiem theo dia chi bang cach bam phim enter
   //ket qua lay toa do theo dia chi do
   searchEnter(f: number) {
-    console.log("enter funtion: " + f);
+    //console.log("enter funtion: " + f);
 
     if (f == 1) {
       //truong hop diem dau da tim thay bang chuc nang keo tha
@@ -646,7 +636,7 @@ export class HomePage {
       }
       )
       .catch(err => {
-        console.log(JSON.stringify(err))
+        //console.log(JSON.stringify(err))
         this.toastCtrl.create({
           message: "Err: " + JSON.stringify(err),
           duration: 5000,
@@ -659,10 +649,10 @@ export class HomePage {
   searchRoute(origin: string, destination: string) {
     //truong hop tim duong di khi co 2 diem duoc gan
 
-    this.apiService.getRouteApiNative(origin, destination)
+    this.apiService.getRouteApi(origin, destination)
       .then(routeApi => {
         
-        console.log(routeApi);
+        //console.log(routeApi);
         //ve duong di tu diem dau den diem cuoi theo tung diem duoc tim thay
         //tra ve: khoang cach, so tien uoc luong
         //so luong diem duong di ...
@@ -687,7 +677,7 @@ export class HomePage {
       }
       )
        .catch(err => {
-        console.log("Loi request route: " + JSON.stringify(err))
+        //console.log("Loi request route: " + JSON.stringify(err))
         //console.log(JSON.stringify(err))
         this.toastCtrl.create({
           message: "Err API route: " + JSON.stringify(err),

@@ -23,7 +23,8 @@ export class ApiService {
         private platform: Platform) { }
 
     getAddressFromlatlng(latlng: string) {
-        return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='
+        //return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='
+        return this.http.get('http://c3.mobifone.vn/i_api/getPoint?latlng='
             + latlng
             + '&key=' + this.GOOGLE_API_KEY)
             .toPromise()
@@ -33,15 +34,12 @@ export class ApiService {
     }
 
     getlatlngFromAddress(address: string) {
-        return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address='
+        //return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address='
+        return this.http.get('http://c3.mobifone.vn/i_api/getAddress?address='
             + address
             + '&key=' + this.GOOGLE_API_KEY)
             .toPromise()
             .then(res => res.json())
-            //.then(apiJson=>console.log(JSON.stringify(apiJson)))
-            /* .then(apiJson => apiJson.results[0].geometry.location.lat
-                + ','
-                + apiJson.results[0].geometry.location.lng) */
     }
 
     getWeatherApi(cityId: number) {
@@ -56,24 +54,41 @@ export class ApiService {
 
 
     getRouteApi(startPoint: string, endPoint: string) {
-        //them header option de sua loi CORS
+        //lay route tu api mobifone
         
         return this.http.get(
-            //'https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyDBxMizhomgbDZ9ljbf9-mY_Omuo0heCig'
-            'https://maps.googleapis.com/maps/api/directions/json?origin=' + startPoint
+            'http://c3.mobifone.vn/i_api/getRoutes?origin=' + startPoint
             + '&destination=' + endPoint
             + '&key=' + this.GOOGLE_API_KEY
-            //, options
-        )
+            )
             .toPromise()
             .then(res => res.json())
-            .then(apiJson => 
-             this.routeApi =   {
-                    route:apiJson.routes[0].overview_polyline.points,
-                    points:this.decodePolyline(apiJson.routes[0].overview_polyline.points),
-                    length:0,
-                    cost:0
-                }
+            .then(apiJson => this.routeApi =   {
+                                route: apiJson.routes[0].overview_polyline.points,
+                                points:this.decodePolyline(apiJson.routes[0].overview_polyline.points),
+                                end_address: apiJson.routes[0].legs[0].end_address,
+                                end_location: {
+                                                lat : apiJson.routes[0].legs[0].end_location.lat,
+                                                lng : apiJson.routes[0].legs[0].end_location.lng
+                                                },
+                                start_address: apiJson.routes[0].legs[0].start_address,
+                                start_location: {
+                                                lat : apiJson.routes[0].legs[0].start_location.lat,
+                                                lng : apiJson.routes[0].legs[0].start_location.lng
+                                                },
+                                distance: {
+                                    text: apiJson.routes[0].legs[0].distance.text,
+                                    value: apiJson.routes[0].legs[0].distance.value
+                                    },
+                                duration: {
+                                        text : apiJson.routes[0].legs[0].duration.text,
+                                        value : apiJson.routes[0].legs[0].duration.value,
+                                     },
+                                cost: {
+                                    vnd: 18,
+                                    usd:0.1
+                                }
+                            }
             )
 
     }
