@@ -40,13 +40,6 @@ export class ApiService {
             + '&key=' + this.GOOGLE_API_KEY)
             .toPromise()
             .then(res => res.json())
-<<<<<<< HEAD
-=======
-        //.then(apiJson=>console.log(JSON.stringify(apiJson)))
-        /* .then(apiJson => apiJson.results[0].geometry.location.lat
-            + ','
-            + apiJson.results[0].geometry.location.lng) */
->>>>>>> db787387030bda0a6906968731daf7b0d9b472b3
     }
 
     getWeatherApi(cityId: number) {
@@ -56,18 +49,10 @@ export class ApiService {
             + '&units=metric')
             .toPromise()
             .then(res => res.json())
-        //.then(apiJson=>console.log(JSON.stringify(apiJson)))
     }
 
 
     getRouteApi(startPoint: string, endPoint: string) {
-<<<<<<< HEAD
-        //lay route tu api mobifone
-        
-=======
-        //them header option de sua loi CORS
-
->>>>>>> db787387030bda0a6906968731daf7b0d9b472b3
         return this.http.get(
             'http://c3.mobifone.vn/i_api/getRoutes?origin=' + startPoint
             + '&destination=' + endPoint
@@ -75,7 +60,6 @@ export class ApiService {
             )
             .toPromise()
             .then(res => res.json())
-<<<<<<< HEAD
             .then(apiJson => this.routeApi =   {
                                 route: apiJson.routes[0].overview_polyline.points,
                                 points:this.decodePolyline(apiJson.routes[0].overview_polyline.points),
@@ -102,15 +86,6 @@ export class ApiService {
                                     usd:0.1
                                 }
                             }
-=======
-            .then(apiJson =>
-                this.routeApi = {
-                    route: apiJson.routes[0].overview_polyline.points,
-                    points: this.decodePolyline(apiJson.routes[0].overview_polyline.points),
-                    length: 0,
-                    cost: 0
-                }
->>>>>>> db787387030bda0a6906968731daf7b0d9b472b3
             )
 
     }
