@@ -41,7 +41,7 @@ export class HomePage {
   isShowSearch: boolean = false;
   isShowRoute: boolean = false;
   isShowCenter: boolean = false;
-  isShowFooter: boolean = true;
+  
 
   isOriginOK: boolean = false;
   isDestinationOK: boolean = false;
@@ -90,6 +90,10 @@ export class HomePage {
 
   }
 
+  /**
+   * Ham thoi gian chi de phuc vu chay online
+   * Khi thực hiện trao đổi thông tin giữa driver và client thì chỉ cần trao đổi qua room chat
+   */
   runTimer() {
     if (this.isLocOK) {
       //neu no da chay vi tri ok thi dung lai
@@ -140,8 +144,7 @@ export class HomePage {
     this.isShowSearch = false;
     this.isShowRoute = false;
     this.isShowCenter = false;
-    this.isShowFooter = false;
-
+    
     this.isOriginOK = false;
     this.isDestinationOK = false;
 
@@ -376,9 +379,13 @@ export class HomePage {
   }
 
 
-  //tim kiem route hien thi ca diem dau va diem cuoi
-  showRoutebar() {
+  //Nút gọi tìm kiếm đường đi hiện không sử dụng
+  showSetting() {
     //this.isShowRoute = !this.isShowRoute;
+    this.apiService.getHeroku()
+          .then((data)=>console.log(data))
+          .catch((err)=>console.log(err));
+
   }
 
 
@@ -562,20 +569,6 @@ export class HomePage {
 
     }
   }
-
-  inputChange1(ev){
-      //console.log("gia tri goc: " + this.originLocation.address);
-      //console.log("cua so: " + ev.target.value);
-  }
-
-  inputChange2(ev){
-    //console.log("gia tri goc: " + this.destinationLocation.address);
-    //console.log("cua so: " + ev.target.value);
-   }
-
-   closeFooter(){
-     this.isShowFooter=false;
-   }
 
   // tim kiem theo dia chi bang cach bam phim enter
   //ket qua lay toa do theo dia chi do

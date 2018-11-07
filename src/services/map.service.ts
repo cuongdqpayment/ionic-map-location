@@ -22,6 +22,13 @@ export class ApiService {
         private http_native: HTTP,
         private platform: Platform) { }
 
+
+    getHeroku(){
+        return this.http.get('https://cuongdqjson.herokuapp.com/loginok')
+            .toPromise()
+            .then(res => res)
+    }
+
     getAddressFromlatlng(latlng: string) {
         //return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng='
         return this.http.get('http://c3.mobifone.vn/i_api/getPoint?latlng='
