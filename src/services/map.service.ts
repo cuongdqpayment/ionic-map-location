@@ -26,7 +26,14 @@ export class ApiService {
     getHeroku(){
         return this.http.get('https://cuongdqjson.herokuapp.com/loginok')
             .toPromise()
-            .then(res => res)
+            .then(res => res.json())
+    }
+
+
+    postHeroku(jData){
+        return this.http.post('https://cuongdqjson.herokuapp.com/loginok',JSON.stringify(jData))
+            .toPromise()
+            .then(res => res.json())
     }
 
     getAddressFromlatlng(latlng: string) {

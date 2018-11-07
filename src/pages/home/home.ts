@@ -41,7 +41,7 @@ export class HomePage {
   isShowSearch: boolean = false;
   isShowRoute: boolean = false;
   isShowCenter: boolean = false;
-  
+
 
   isOriginOK: boolean = false;
   isDestinationOK: boolean = false;
@@ -144,7 +144,7 @@ export class HomePage {
     this.isShowSearch = false;
     this.isShowRoute = false;
     this.isShowCenter = false;
-    
+
     this.isOriginOK = false;
     this.isDestinationOK = false;
 
@@ -235,7 +235,7 @@ export class HomePage {
       radius: 20
     });
 
-    
+
     //danh dau vung hien tai sai so
     curCircle = new google.maps.Circle({
       strokeColor: '#caeaf9',
@@ -382,9 +382,15 @@ export class HomePage {
   //Nút gọi tìm kiếm đường đi hiện không sử dụng
   showSetting() {
     //this.isShowRoute = !this.isShowRoute;
-    this.apiService.getHeroku()
-          .then((data)=>console.log(data))
-          .catch((err)=>console.log(err));
+    this.apiService.postHeroku(
+      {
+        "command_id": "login",
+        "username": "cuongdq",
+        "password": "12345"
+      }
+    )
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
 
   }
 
@@ -491,8 +497,8 @@ export class HomePage {
       //dong tac la bam nut enter: tim diem den
       //luc nay this.originLocation co toa do, dia chi, isOriginOK=true
       //truong hop co chinh sua dia chi diem dau bang tay thi isOriginOK=false
-      let oLatlng= new google.maps.LatLng(this.originLocation.lat,
-                                          this.originLocation.lon);
+      let oLatlng = new google.maps.LatLng(this.originLocation.lat,
+        this.originLocation.lon);
 
       this.map.setCenter(oLatlng);
       //thuc hien gan diem dau marker
@@ -524,7 +530,7 @@ export class HomePage {
     if (f == 2) {
       // truong hop tim kiem go enter co day du ket qua diem cuoi
 
-      let dLatlng= new google.maps.LatLng(this.destinationLocation.lat,
+      let dLatlng = new google.maps.LatLng(this.destinationLocation.lat,
         this.destinationLocation.lon);
 
       this.map.setCenter(dLatlng);
@@ -550,8 +556,8 @@ export class HomePage {
       //goi chuc nang tim duong di 
       //ket qua ve duong di cho no
       this.searchRoute(
-        this.originLocation.lat+","+this.originLocation.lon
-        ,this.destinationLocation.lat+","+this.destinationLocation.lon);
+        this.originLocation.lat + "," + this.originLocation.lon
+        , this.destinationLocation.lat + "," + this.destinationLocation.lon);
 
     }
   }
@@ -644,12 +650,12 @@ export class HomePage {
 
     this.apiService.getRouteApi(origin, destination)
       .then(routeApi => {
-        
+
         //console.log(routeApi);
         //ve duong di tu diem dau den diem cuoi theo tung diem duoc tim thay
         //tra ve: khoang cach, so tien uoc luong
         //so luong diem duong di ...
-         
+
         var flightPath = new google.maps.Polyline({
           path: routeApi.points,
           geodesic: true,
@@ -666,10 +672,10 @@ export class HomePage {
           position: 'middle'
         }).present();
 
-        
+
       }
       )
-       .catch(err => {
+      .catch(err => {
         //console.log("Loi request route: " + JSON.stringify(err))
         //console.log(JSON.stringify(err))
         this.toastCtrl.create({
