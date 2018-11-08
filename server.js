@@ -26,3 +26,7 @@ app.set('port',port);
 app.listen(app.get('port'), function () {
     console.log('listening in http://cuongdqionic.herokuapp.com:' + port);
 });
+
+app.get('/*',(req,res)=>{
+    res.sendfile("index.html");
+})

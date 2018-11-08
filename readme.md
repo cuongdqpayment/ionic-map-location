@@ -17,6 +17,15 @@ make: server.js
 
 make: Procfile
 web: npm run build && npm start
-web: node server.js
+#Lenh build va start se doc script trong package.json de chay cai gi
+#vi du: 
+"scripts": {
+    "start": "ionic-app-scripts serve", --> bat dau chay ionic
+    "clean": "ionic-app-scripts clean", --> lenh lam sach
+    "build": "ionic-app-scripts build", --> lenh xay dung
+    "lint": "ionic-app-scripts lint"    --> lenh lint
+  },
+#web: node server.js
+
 
 make: herokuDeployment.sh
