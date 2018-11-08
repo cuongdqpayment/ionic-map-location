@@ -16,5 +16,7 @@ into:
 make: server.js
 
 make: Procfile
+web: npm run build && npm start
+web: node server.js
 
 make: herokuDeployment.sh
